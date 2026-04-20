@@ -20,7 +20,7 @@
             background: linear-gradient(rgba(0,0,0,0.73), rgba(0,0,0,0.85)), url('assets/images/arriere_plan.jpg') center/cover no-repeat;
         }
         .login-box { text-align: center; width: 90%; max-width: 400px; padding: 2.5rem; background: rgba(0,0,0,0.7); backdrop-filter: blur(15px); border-radius: 40px; border: 1px solid rgba(211,47,47,0.3); }
-        .logo-login { height: 80px; margin: 0 5px 1.5rem; object-fit: contain; }
+        .logo-login { height: 100px; margin-bottom: 1.5rem; object-fit: contain; filter: drop-shadow(0 0 15px rgba(211,47,47,0.4)); }
         
         input, select { 
             width: 100%; padding: 1.1rem; font-size: 1.4rem; text-align: center; 
@@ -37,9 +37,9 @@
         #app { display: none; height: 100vh; flex-direction: column; padding: 0.5rem; }
         .topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D32F2F; padding: 8px 10px; background: #000; border-radius: 15px; margin-bottom: 10px; }
 
-        .top-brand { display: flex; align-items: center; gap: 6px; flex: 1; overflow-x: auto; scrollbar-width: none; }
+        .top-brand { display: flex; align-items: center; gap: 8px; flex: 1; overflow-x: auto; scrollbar-width: none; }
         .top-brand::-webkit-scrollbar { display: none; }
-        .top-brand img { height: 30px; min-width: 30px; object-fit: contain; flex-shrink: 0; }
+        .top-brand img { height: 35px; min-width: 35px; object-fit: contain; flex-shrink: 0; }
 
         .main-container { flex: 1; overflow-y: auto; padding-bottom: 100px; padding: 0 5px; }
         
@@ -71,10 +71,7 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <div style="display:flex; justify-content:center; align-items:center;">
-                <img src="assets/images/logo.webp" alt="L1" class="logo-login">
-                <img src="assets/images/logo_2.jpg" alt="L2" class="logo-login">
-            </div>
+            <img src="assets/images/logo_2.jpg" alt="Logo" class="logo-login">
             <img src="assets/images/EL ASSIMA.jpeg" alt="Nom" style="height:45px; margin-bottom:1.5rem; object-fit:contain; display:block; margin: 0 auto 1.5rem;">
             <input type="tel" id="pin-input" maxlength="4" placeholder="••••">
             <button onclick="checkPin()">ENTRER</button>
@@ -85,9 +82,8 @@
     <div id="app">
         <div class="topbar">
             <div class="top-brand">
-                <img src="assets/images/logo.webp" alt="Logo1">
-                <img src="assets/images/logo_2.jpg" alt="Logo2">
-                <img src="assets/images/EL ASSIMA.jpeg" alt="Assima" style="height:35px;">
+                <img src="assets/images/logo_2.jpg" alt="Logo">
+                <img src="assets/images/EL ASSIMA.jpeg" alt="Assima">
                 <img src="assets/images/IMG 1.JPG" alt="I1">
                 <img src="assets/images/IMG 2.JPG" alt="I2">
                 <img src="assets/images/IMG 3.JPG" alt="I3">
@@ -157,7 +153,7 @@
                 }
                 loadData();
             } else {
-                document.getElementById('err').innerText = "VÉRIFIEZ VOTRE CODE";
+                document.getElementById('err').innerText = "VÉRIFIEZ LE CODE";
                 document.getElementById('pin-input').value = "";
             }
         }
