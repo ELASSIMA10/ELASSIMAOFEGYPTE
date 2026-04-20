@@ -24,63 +24,87 @@
   <!-- SPLASH SCREEN -->
   <div id="splash">
     <div class="splash-logo">
-      <img src="assets/images/logo.webp" alt="EL ASSIMA LOGO" style="width: 100px; height: 100px; object-fit: contain;">
+      <img src="assets/images/logo.webp" alt="EL ASSIMA LOGO" style="width: 130px; height: 130px; object-fit: contain;">
     </div>
     <h1 class="splash-title">EL ASSIMA</h1>
     <p class="splash-sub">Egypt Edition</p>
   </div>
 
-  <!-- MAIN APP (Visible by default, no code) -->
-  <div id="app" style="display: flex;">
+  <!-- LOGIN SCREEN (Restored with codes 0101 and 2020) -->
+  <div id="login-screen">
+    <div class="login-wrapper">
+      <div class="login-logo-container">
+        <img src="assets/images/logo.webp" alt="EL ASSIMA" class="main-login-logo">
+      </div>
+      
+      <div class="pin-entry-box">
+        <label>CODE D'ACCÈS</label>
+        <div class="pin-input-group">
+          <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="••••">
+        </div>
+        <div id="pin-error" class="error-text"></div>
+        <button class="btn-unlock" onclick="handleLogin()">OUVRIR LA SESSION</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app">
     <header class="topbar">
       <div class="brand">
         <div class="top-logo">
-          <img src="assets/images/logo.webp" alt="EL ASSIMA LOGO" style="width: 30px; height: 30px; object-fit: contain;">
+          <img src="assets/images/logo.webp" alt="LOGO" style="width: 30px; height: 30px; object-fit: contain;">
         </div>
         <div class="top-name">ASSIMA EGYPT</div>
       </div>
-      <div class="status-indicator" id="current-date">--/--/----</div>
+      <div class="top-actions">
+        <span id="current-date" class="date-badge">--/--/----</span>
+        <button class="logout-mini" onclick="logout()">🚪</button>
+      </div>
     </header>
 
     <main class="page-container">
       
-      <!-- PAGE: SAISIE -->
+      <!-- SAISIE -->
       <section id="page-form" class="page active">
         <div class="page-header">
           <h1>Saisie</h1>
-          <p>Nouvel enregistrement</p>
+          <p>Enregistrement des réservations</p>
         </div>
         <div class="form-container">
           <form id="guest-form" onsubmit="submitForm(event)">
-            <div class="input-group"><label>NOM ET PRÉNOM</label><input type="text" id="fullname" placeholder="Nom complet" required></div>
+            <div class="input-group">
+              <label>NOM ET PRÉNOM</label>
+              <input type="text" id="fullname" placeholder="Nom complet du client" required autocomplete="off">
+            </div>
             <div class="input-row">
-              <div class="input-group" style="margin:0"><label>ARRIVÉE</label><input type="date" id="arrival-date" required></div>
-              <div class="input-group" style="margin:0"><label>SORTIE</label><input type="date" id="departure-date" required></div>
+              <div class="input-group"><label>DATE ARRIVÉE</label><input type="date" id="arrival-date" required></div>
+              <div class="input-group"><label>DATE SORTIE</label><input type="date" id="departure-date" required></div>
             </div>
             <div class="input-group">
               <label>ZONE / EMPLACEMENT</label>
               <select id="zone" required>
-                <option value="" disabled selected>Choisir...</option>
+                <option value="" disabled selected>Sélectionnez...</option>
                 <option value="Premium">Zone Premium</option>
                 <option value="Standard">Zone Standard</option>
                 <option value="VIP">Espace VIP</option>
                 <option value="Terrasse">Terrasse</option>
               </select>
             </div>
-            <button type="submit" class="btn-gold-wide">VALIDER</button>
+            <button type="submit" class="btn-gold-wide">ENREGISTRER</button>
           </form>
         </div>
       </section>
 
-      <!-- PAGE: PLANNING -->
+      <!-- PLANNING -->
       <section id="page-list" class="page">
         <div class="page-header">
           <h1>Planning</h1>
-          <p>Fiches de réservations</p>
+          <p>Suivi des réservations</p>
         </div>
         <div class="view-tabs">
-          <button class="active" onclick="switchTab('arrivals')">Arrivées</button>
-          <button onclick="switchTab('departures')">Sorties</button>
+          <button class="active" id="btn-tab-arrivals" onclick="switchTab('arrivals')">Arrivées</button>
+          <button id="btn-tab-departures" onclick="switchTab('departures')">Sorties</button>
         </div>
         <div id="tab-arrivals" class="tab-content active"><div id="arrivals-container"></div></div>
         <div id="tab-departures" class="tab-content"><div id="departures-container"></div></div>
@@ -88,7 +112,7 @@
 
     </main>
 
-    <!-- BOTTOM NAV (Always visible) -->
+    <!-- NAVIGATION -->
     <nav class="bottom-nav">
       <div class="nav-item active" id="nav-form" onclick="switchPage('form')">
         <div class="nav-icon">📝</div><span>Saisie</span>
