@@ -20,7 +20,7 @@
             background: linear-gradient(rgba(0,0,0,0.73), rgba(0,0,0,0.85)), url('assets/images/arriere_plan.jpg') center/cover no-repeat;
         }
         .login-box { text-align: center; width: 90%; max-width: 400px; padding: 2.5rem; background: rgba(0,0,0,0.7); backdrop-filter: blur(15px); border-radius: 40px; border: 1px solid rgba(211,47,47,0.3); }
-        .logo { width: 130px; margin-bottom: 2rem; }
+        .logo-login { height: 80px; margin: 0 5px 1.5rem; object-fit: contain; }
         
         input, select { 
             width: 100%; padding: 1.1rem; font-size: 1.4rem; text-align: center; 
@@ -35,10 +35,11 @@
         }
         
         #app { display: none; height: 100vh; flex-direction: column; padding: 0.5rem; }
-        .topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D32F2F; padding: 8px 12px; background: #000; border-radius: 15px; margin-bottom: 10px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D32F2F; padding: 8px 10px; background: #000; border-radius: 15px; margin-bottom: 10px; }
 
-        .top-brand { display: flex; align-items: center; gap: 8px; flex: 1; overflow: hidden; }
-        .top-brand img { height: 35px; object-fit: contain; }
+        .top-brand { display: flex; align-items: center; gap: 6px; flex: 1; overflow-x: auto; scrollbar-width: none; }
+        .top-brand::-webkit-scrollbar { display: none; }
+        .top-brand img { height: 30px; min-width: 30px; object-fit: contain; flex-shrink: 0; }
 
         .main-container { flex: 1; overflow-y: auto; padding-bottom: 100px; padding: 0 5px; }
         
@@ -70,8 +71,11 @@
 
     <div id="login-screen">
         <div class="login-box">
-            <img src="assets/images/logo_2.jpg" alt="Logo" class="logo">
-            <img src="assets/images/EL ASSIMA.jpeg" alt="Nom" style="height:45px; margin-bottom:1.5rem; object-fit:contain;">
+            <div style="display:flex; justify-content:center; align-items:center;">
+                <img src="assets/images/logo.webp" alt="L1" class="logo-login">
+                <img src="assets/images/logo_2.jpg" alt="L2" class="logo-login">
+            </div>
+            <img src="assets/images/EL ASSIMA.jpeg" alt="Nom" style="height:45px; margin-bottom:1.5rem; object-fit:contain; display:block; margin: 0 auto 1.5rem;">
             <input type="tel" id="pin-input" maxlength="4" placeholder="••••">
             <button onclick="checkPin()">ENTRER</button>
             <p id="err" style="color:#FFF; margin-top:1rem; font-size:0.8rem; font-weight:900;"></p>
@@ -81,14 +85,14 @@
     <div id="app">
         <div class="topbar">
             <div class="top-brand">
-                <img src="assets/images/logo_2.jpg" alt="Logo">
-                <img src="assets/images/EL ASSIMA.jpeg" alt="Assima">
-                <!-- SPECIFIC IMAGES REQUESTED: IMG 1, IMG 2, IMG 3 -->
-                <img src="assets/images/IMG 1.JPG" alt="1">
-                <img src="assets/images/IMG 2.JPG" alt="2">
-                <img src="assets/images/IMG 3.JPG" alt="3">
+                <img src="assets/images/logo.webp" alt="Logo1">
+                <img src="assets/images/logo_2.jpg" alt="Logo2">
+                <img src="assets/images/EL ASSIMA.jpeg" alt="Assima" style="height:35px;">
+                <img src="assets/images/IMG 1.JPG" alt="I1">
+                <img src="assets/images/IMG 2.JPG" alt="I2">
+                <img src="assets/images/IMG 3.JPG" alt="I3">
             </div>
-            <button onclick="location.reload()" style="background:none; color:#fff; font-size:1.3rem; border:none; cursor:pointer;">🚪</button>
+            <button onclick="location.reload()" style="background:none; color:#fff; font-size:1.3rem; border:none; cursor:pointer; flex-shrink:0;">🚪</button>
         </div>
 
         <div class="main-container">
@@ -100,12 +104,12 @@
             <div id="form" class="page active">
                 <div class="form-card">
                     <label>IDENTITÉ DU CLIENT</label>
-                    <input type="text" id="fullname" placeholder="Nom complet..." style="text-align:left; letter-spacing:0; padding:12px;">
+                    <input type="text" id="fullname" placeholder="..." style="text-align:left; letter-spacing:0; padding:12px;">
                     <div style="display:flex; gap:10px;">
                         <div style="flex:1;"><label>ARRIVÉE</label><input type="date" id="arrival"></div>
                         <div style="flex:1;"><label>SORTIE</label><input type="date" id="departure"></div>
                     </div>
-                    <label>ZONE DE RÉSIDENCE</label>
+                    <label>ZONE</label>
                     <select id="zone" style="text-align:left;">
                         <script>for(let i=1; i<=14; i++) document.write(`<option value="Zone ${i}">Zone ${i}</option>`);</script>
                     </select>
@@ -144,7 +148,6 @@
                 appMode = val;
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app').style.display = 'flex';
-                
                 if (val === "2020") {
                     document.getElementById('nav-list').style.display = 'block';
                     document.getElementById('stats-area').style.display = 'flex';
@@ -154,7 +157,7 @@
                 }
                 loadData();
             } else {
-                document.getElementById('err').innerText = "CODE FAUX";
+                document.getElementById('err').innerText = "VÉRIFIEZ VOTRE CODE";
                 document.getElementById('pin-input').value = "";
             }
         }
@@ -184,7 +187,7 @@
                 });
                 toast("SUCCÈS !");
                 document.getElementById('fullname').value = "";
-            } catch(e) { toast("ERREUR"); }
+            } catch(e) { alert("Erreur reseau"); }
             btn.disabled = false;
         }
 
@@ -192,7 +195,6 @@
             db.collection("registrations").orderBy("timestamp", "desc").onSnapshot(snap => {
                 const list = document.getElementById('data-list');
                 const totalCountEl = document.getElementById('total-count');
-                
                 const total = snap.size;
                 if (totalCountEl) totalCountEl.innerText = total;
 
@@ -211,7 +213,7 @@
                         <div class="entry-card">
                             <div class="entry-info">
                                 <b>${item.fullname}</b>
-                                <small>Séjour: ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
+                                <small>Du ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
                             </div>
                             <div class="dates-pill">${formatDate(item.arrival)}</div>
                         </div>`;
