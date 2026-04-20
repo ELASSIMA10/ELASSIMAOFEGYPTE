@@ -1,109 +1,168 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" style="background:#000;">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="EL ASSIMA EGYPT - Gestion des Réservations">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>EL ASSIMA EGYPT | Réservations</title>
-  <link rel="apple-touch-icon" href="assets/images/logo.webp">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EL ASSIMA EGYPT</title>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #000; color: #D32F2F; font-family: sans-serif; height: 100vh; overflow: hidden; }
+        
+        #login-screen { 
+            position: fixed; inset: 0; background: #000; z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .login-box { text-align: center; width: 90%; max-width: 400px; }
+        .logo { width: 180px; margin-bottom: 2rem; }
+        
+        input { 
+            width: 100%; padding: 1.5rem; font-size: 2rem; text-align: center; 
+            background: #111; border: 2px solid #333; color: #fff; border-radius: 15px;
+            margin-bottom: 1.5rem; outline: none; letter-spacing: 10px;
+        }
+        input:focus { border-color: #D32F2F; }
+        
+        button { 
+            width: 100%; padding: 1.2rem; background: #D32F2F; color: #fff; 
+            border: none; border-radius: 15px; font-weight: 900; font-size: 1.2rem; cursor: pointer;
+        }
+        
+        #app { display: none; height: 100vh; flex-direction: column; padding: 1rem; overflow-y: auto; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 1rem; margin-bottom: 1rem; }
+        .nav { display: flex; gap: 1rem; margin-top: 1rem; }
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #D32F2F; color: #fff; padding: 1rem; border-radius: 10px; display: none; }
+    </style>
 </head>
 <body>
 
-  <!-- SPLASH SCREEN -->
-  <div id="splash">
-    <div class="splash-logos">
-      <img src="assets/images/logo.webp" alt="Logo L">
-      <img src="assets/images/logo_2.jpg" alt="Logo R">
-    </div>
-  </div>
-
-  <!-- LOGIN SCREEN -->
-  <div id="login-screen">
-    <div class="login-center">
-      <div class="pin-box">
-        <div class="login-logo-container" style="margin-bottom: 2rem;">
-          <img src="assets/images/logo.webp" alt="EL ASSIMA 10" style="width: 150px; height: 150px; object-fit: contain;">
+    <div id="login-screen">
+        <div class="login-box">
+            <img src="assets/images/logo_2.jpg" alt="EL ASSIMA 10" class="logo">
+            <h2 style="margin-bottom:1.5rem; letter-spacing:3px;">ACCÈS RÉSERVÉ</h2>
+            <input type="tel" id="pin-input" maxlength="4" placeholder="••••">
+            <button onclick="checkPin()">VALIDER</button>
+            <p id="err" style="color:#ff0; margin-top:1rem;"></p>
         </div>
-        <label>LOGUEZ-VOUS</label>
-        <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="••••">
-        <div id="pin-error" class="error-text"></div>
-        <button class="btn-unlock" onclick="handleLogin()">ENTRER</button>
-      </div>
     </div>
-  </div>
 
-  <!-- MAIN APP -->
-  <div id="app">
-    <header class="topbar">
-      <div class="top-logos">
-        <img src="assets/images/logo.webp" alt="LOGO">
-        <div class="top-title" style="margin-left:10px">ASSIMA EGYPT</div>
-      </div>
-      <div class="top-actions">
-        <span id="current-date" class="date-badge">--/--/----</span>
-        <button onclick="logout()" style="background:none; border:none; cursor:pointer; font-size:1.5rem">🚪</button>
-      </div>
-    </header>
-
-    <main class="page-container">
-      <section id="page-form" class="page active">
-        <div class="page-header" style="margin-bottom:1.5rem; text-align:center;">
-          <h1>SAISIE</h1>
+    <div id="app">
+        <div class="topbar">
+            <img src="assets/images/logo_2.jpg" alt="Logo" style="width:40px;">
+            <h3 style="font-style:italic;">ASSIMA EGYPT</h3>
+            <button onclick="location.reload()" style="background:none; color:#fff; font-size:1.5rem; width:auto;">🚪</button>
         </div>
-        <div class="form-container">
-          <form id="guest-form" onsubmit="submitForm(event)">
-            <label>NOM ET PRÉNOM</label>
-            <input type="text" id="fullname" placeholder="Nom complet" required autocomplete="off">
-            
-            <div class="input-row">
-              <div class="group"><label>ARRIVÉE</label><input type="date" id="arrival-date" required></div>
-              <div class="group"><label>SORTIE</label><input type="date" id="departure-date" required></div>
+
+        <div class="nav">
+            <button onclick="showPage('form')" style="flex:1;">SAISIE</button>
+            <button id="btn-list" onclick="showPage('list')" style="flex:1; display:none;">PLANNING</button>
+        </div>
+
+        <div id="form" class="page active" style="margin-top:2rem;">
+            <label>NOM ET PRÉNOM</label><br>
+            <input type="text" id="fullname" placeholder="Nom complet" style="font-size:1.2rem; letter-spacing:0; padding:1rem; margin-top:0.5rem;"><br>
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;"><label>ARRIVÉE</label><input type="date" id="arrival" style="font-size:1rem; letter-spacing:0;"></div>
+                <div style="flex:1;"><label>SORTIE</label><input type="date" id="departure" style="font-size:1rem; letter-spacing:0;"></div>
             </div>
-            
-            <label>ZONE</label>
-            <select id="zone" required>
-              <option value="" disabled selected>Choisir la zone</option>
-              <option value="Premium">Zone Premium</option>
-              <option value="Standard">Zone Standard</option>
-              <option value="VIP">Espace VIP</option>
-              <option value="Terrasse">Terrasse</option>
+            <label>ZONE</label><br>
+            <select id="zone" style="width:100%; padding:1rem; background:#111; color:#fff; border:1px solid #333; border-radius:10px; margin-bottom:1.5rem;">
+                <option value="Premium">Zone Premium</option>
+                <option value="Standard">Zone Standard</option>
+                <option value="VIP">Espace VIP</option>
+                <option value="Terrasse">Terrasse</option>
             </select>
+            <button onclick="saveData()">ENREGISTRER</button>
+        </div>
+
+        <div id="list" class="page" style="margin-top:2rem;">
+             <h4 style="color:#fff; margin-bottom:1rem;">RÉSERVATIONS</h4>
+             <div id="data-list"></div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const config = {
+            apiKey: "AIzaSyBgK8ZKmZ0N329vOTfpiAyYAhPu_mhyTAM",
+            authDomain: "app-10-1b5fd.firebaseapp.com",
+            projectId: "app-10-1b5fd",
+            storageBucket: "app-10-1b5fd.appspot.com",
+            messagingSenderId: "179443689337",
+            appId: "1:179443689337:web:31ca73ac50811b286931a8"
+        };
+        firebase.initializeApp(config);
+        const db = firebase.firestore();
+        let mode = "";
+
+        function checkPin() {
+            const val = document.getElementById('pin-input').value;
+            if (val === "0101" || val === "2020") {
+                mode = val;
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app').style.display = 'flex';
+                if (val === "2020") document.getElementById('btn-list').style.display = 'block';
+                loadData();
+            } else {
+                document.getElementById('err').innerText = "CODE FAUX";
+                document.getElementById('pin-input').value = "";
+            }
+        }
+
+        // Auto-check on 4 digits
+        document.getElementById('pin-input').addEventListener('input', function(e) {
+            if (this.value.length === 4) checkPin();
+        });
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        async function saveData() {
+            const btn = event.target;
+            const data = {
+                fullname: document.getElementById('fullname').value,
+                arrival: document.getElementById('arrival').value,
+                departure: document.getElementById('departure').value,
+                zone: document.getElementById('zone').value,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            if (!data.fullname) return alert("Nom recquis");
             
-            <button type="submit" class="btn-red">ENREGISTRER</button>
-          </form>
-        </div>
-      </section>
+            btn.disabled = true;
+            try {
+                await db.collection("registrations").add(data);
+                toast("Enregistré !");
+                document.getElementById('fullname').value = "";
+            } catch(e) { alert("Erreur reseau"); }
+            btn.disabled = false;
+        }
 
-      <section id="page-list" class="page">
-        <div class="page-header" style="margin-bottom:1.5rem; text-align:center;">
-          <h1>PLANNING</h1>
-        </div>
-        <div class="view-tabs">
-          <button class="active" id="btn-tab-arrivals" onclick="switchTab('arrivals')">ARRIVÉES</button>
-          <button id="btn-tab-departures" onclick="switchTab('departures')">SORTIES</button>
-        </div>
-        <div id="tab-arrivals" class="tab-content active"><div id="arrivals-container"></div></div>
-        <div id="tab-departures" class="tab-content"><div id="departures-container"></div></div>
-      </section>
-    </main>
+        function loadData() {
+            db.collection("registrations").orderBy("timestamp", "desc").limit(20).onSnapshot(snap => {
+                const list = document.getElementById('data-list');
+                list.innerHTML = "";
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    list.innerHTML += `<div style="background:#111; padding:10px; border-left:3px solid #D32F2F; margin-bottom:10px;">
+                        <b style="color:#fff;">${d.fullname}</b><br>
+                        <small>Du ${d.arrival} au ${d.departure}</small> (${d.zone})
+                    </div>`;
+                });
+            });
+        }
 
-    <nav class="bottom-nav">
-      <div class="nav-item active" id="nav-form" onclick="switchPage('form')">
-        <div style="font-size:1.5rem">📝</div><span>SAISIE</span>
-      </div>
-      <div class="nav-item" id="nav-list" onclick="switchPage('list')">
-        <div style="font-size:1.5rem">📅</div><span>PLANNING</span>
-      </div>
-    </nav>
-  </div>
-
-  <div id="toast">Opération réussie</div>
-  <script src="script.js"></script>
+        function toast(m) {
+            const t = document.getElementById('toast');
+            t.innerText = m; t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 3000);
+        }
+    </script>
 </body>
 </html>
