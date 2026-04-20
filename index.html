@@ -35,15 +35,10 @@
         }
         
         #app { display: none; height: 100vh; flex-direction: column; padding: 0.5rem; }
-        .topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D32F2F; padding: 10px 15px; background: #000; border-radius: 15px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D32F2F; padding: 10px 15px; background: #000; border-radius: 15px; margin-bottom: 10px; }
 
-        /* DECORATIVE PHOTO STRIP */
-        .photo-strip {
-            display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px;
-            scrollbar-width: none;
-        }
-        .photo-strip::-webkit-scrollbar { display: none; }
-        .photo-strip img { height: 70px; min-width: 100px; object-fit: cover; border-radius: 10px; border: 1px solid #333; }
+        .top-brand { display: flex; align-items: center; gap: 10px; }
+        .total-badge { background: #D32F2F; color: #fff; padding: 5px 12px; border-radius: 20px; font-weight: 900; font-size: 0.8rem; margin-right: 10px; }
 
         .main-container { flex: 1; overflow-y: auto; padding-bottom: 100px; padding: 0 5px; }
         
@@ -54,17 +49,16 @@
         .page { display: none; }
         .page.active { display: block; }
         
-        .form-card { background: rgba(0,0,0,0.8); padding: 1.2rem; border-radius: 20px; border: 1px solid #222; }
-        label { color: #D32F2F; font-weight: 900; font-size: 0.7rem; margin-bottom: 4px; display: block; }
+        .form-card { background: rgba(0,0,0,0.8); padding: 1.5rem; border-radius: 20px; border: 1px solid #222; }
+        label { color: #D32F2F; font-weight: 900; font-size: 0.75rem; margin-bottom: 4px; display: block; }
         
-        /* ZONE GROUPING */
         .zone-group { margin-bottom: 2rem; }
         .zone-header { background: #D32F2F; color: #fff; padding: 6px 15px; font-weight: 900; border-radius: 10px; display: inline-block; margin-bottom: 10px; font-size: 0.8rem; }
         
-        .entry-card { background: #111; padding: 12px; border-radius: 12px; border: 1px solid #222; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .entry-info b { color: #fff; display: block; font-size: 1rem; text-transform: uppercase; }
-        .entry-info small { color: #666; font-size: 0.75rem; }
-        .dates-pill { background: #1a1a1a; color: #D32F2F; padding: 3px 8px; border-radius: 5px; font-size: 0.65rem; font-weight: 900; }
+        .entry-card { background: #111; padding: 15px; border-radius: 15px; border: 1px solid #222; border-left: 5px solid #D32F2F; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .entry-info b { color: #fff; display: block; font-size: 1.1rem; text-transform: uppercase; }
+        .entry-info small { color: #888; font-size: 0.8rem; font-weight: 500; }
+        .dates-pill { background: #1a1a1a; color: #D32F2F; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; }
         
         #toast { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: #D32F2F; color: white; padding: 8px 20px; border-radius: 20px; display: none; font-weight: 900; z-index: 3000; }
     </style>
@@ -74,51 +68,44 @@
     <div id="login-screen">
         <div class="login-box">
             <img src="assets/images/logo_2.jpg" alt="Logo" class="logo">
-            <img src="assets/images/EL ASSIMA.jpeg" alt="Nom" style="height:40px; margin-bottom:1.5rem;">
+            <img src="assets/images/EL ASSIMA.jpeg" alt="Nom" style="height:45px; margin-bottom:1.5rem; object-fit:contain;">
             <input type="tel" id="pin-input" maxlength="4" placeholder="••••">
-            <button onclick="checkPin()">OUVRIR SESSION</button>
+            <button onclick="checkPin()">ENTRER</button>
             <p id="err" style="color:#FFF; margin-top:1rem; font-size:0.8rem; font-weight:900;"></p>
         </div>
     </div>
 
     <div id="app">
         <div class="topbar">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <img src="assets/images/logo_2.jpg" alt="Logo" style="width:35px;">
-                <img src="assets/images/EL ASSIMA.jpeg" alt="Assima" style="height:30px;">
+            <div class="top-brand">
+                <img src="assets/images/logo_2.jpg" alt="Logo" style="width:40px;">
+                <img src="assets/images/EL ASSIMA.jpeg" alt="Assima" style="height:35px; object-fit:contain;">
             </div>
-            <button onclick="location.reload()" style="background:none; color:#fff; font-size:1.3rem; border:none;">🚪</button>
+            <div style="display:flex; align-items:center;">
+                <div class="total-badge" id="total-count">0</div>
+                <button onclick="location.reload()" style="background:none; color:#fff; font-size:1.4rem; border:none; cursor:pointer;">🚪</button>
+            </div>
         </div>
 
         <div class="main-container">
-            <!-- DECORATIVE GALLERY AT TOP -->
-            <div class="photo-strip">
-                <img src="assets/images/PINS.png" alt="1">
-                <img src="assets/images/STICKERS.jpeg" alt="2">
-                <img src="assets/images/porte-clé.jpeg" alt="3">
-                <img src="assets/images/Béret 1.jpeg" alt="4">
-                <img src="assets/images/Béret 2.jpeg" alt="5">
-                <img src="assets/images/porte clé new.jpg" alt="6">
-            </div>
-
             <div class="nav">
-                <button id="nav-form" class="active" onclick="showPage('form')">SAISIE CLIENT</button>
-                <button id="nav-list" onclick="showPage('list')" style="display:none;">PLANNING ZONES</button>
+                <button id="nav-form" class="active" onclick="showPage('form')">SAISIE</button>
+                <button id="nav-list" onclick="showPage('list')" style="display:none;">PLANNING</button>
             </div>
 
             <div id="form" class="page active">
                 <div class="form-card">
-                    <label>NOM COMPLET DU CLIENT</label>
-                    <input type="text" id="fullname" placeholder="..." style="text-align:left; letter-spacing:0; padding:12px;">
+                    <label>IDENTITÉ DU CLIENT</label>
+                    <input type="text" id="fullname" placeholder="Nom complet..." style="text-align:left; letter-spacing:0; padding:12px;">
                     <div style="display:flex; gap:10px;">
                         <div style="flex:1;"><label>ARRIVÉE</label><input type="date" id="arrival"></div>
                         <div style="flex:1;"><label>SORTIE</label><input type="date" id="departure"></div>
                     </div>
-                    <label>ZONE</label>
+                    <label>ZONE DE RÉSIDENCE</label>
                     <select id="zone" style="text-align:left;">
                         <script>for(let i=1; i<=14; i++) document.write(`<option value="Zone ${i}">Zone ${i}</option>`);</script>
                     </select>
-                    <button onclick="saveData()">VALIDER L'INSCRIPTION</button>
+                    <button onclick="saveData()">ENREGISTRER</button>
                 </div>
             </div>
 
@@ -152,7 +139,7 @@
                 if (val === "2020") document.getElementById('nav-list').style.display = 'block';
                 loadData();
             } else {
-                document.getElementById('err').innerText = "VÉRIFIEZ LE CODE";
+                document.getElementById('err').innerText = "CODE FAUX";
                 document.getElementById('pin-input').value = "";
             }
         }
@@ -180,9 +167,8 @@
                     fullname: name, arrival: arr, departure: dep, zone: z,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                toast("ENREGISTRÉ !");
+                toast("SUCCÈS !");
                 document.getElementById('fullname').value = "";
-                if (appMode === "2020") setTimeout(() => showPage('list'), 800);
             } catch(e) { toast("ERREUR"); }
             btn.disabled = false;
         }
@@ -190,7 +176,10 @@
         function loadData() {
             db.collection("registrations").orderBy("timestamp", "desc").onSnapshot(snap => {
                 const list = document.getElementById('data-list');
+                const totalEl = document.getElementById('total-count');
                 list.innerHTML = "";
+                totalEl.innerText = snap.size; // Total count
+
                 const grouped = {};
                 snap.forEach(doc => {
                     const d = doc.data();
@@ -198,15 +187,14 @@
                     grouped[d.zone].push(d);
                 });
 
-                // Render by zone
                 Object.keys(grouped).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(zone => {
-                    let html = `<div class="zone-group"><div class="zone-header">${zone}</div>`;
+                    let html = `<div class="zone-group"><div class="zone-header">${zone} (${grouped[zone].length})</div>`;
                     grouped[zone].forEach(item => {
                         html += `
                         <div class="entry-card">
                             <div class="entry-info">
                                 <b>${item.fullname}</b>
-                                <small>Du ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
+                                <small>Séjour: ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
                             </div>
                             <div class="dates-pill">${formatDate(item.arrival)}</div>
                         </div>`;
