@@ -11,72 +11,85 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             background: #000; color: #D32F2F; font-family: 'Outfit', sans-serif; height: 100vh; overflow: hidden; 
-            /* LIGHTER BACKGROUND OVERLAY (0.3 instead of 0.85) */
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.4)), url('assets/images/arriere_plan.jpg') center/cover no-repeat fixed;
+            /* NO OVERLAY - FULL BRIGHTNESS */
+            background: url('assets/images/arriere_plan.jpg') center/cover no-repeat fixed;
         }
         
         #login-screen { 
             position: fixed; inset: 0; z-index: 1000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), url('assets/images/arriere_plan.jpg') center/cover no-repeat;
+            background: url('assets/images/arriere_plan.jpg') center/cover no-repeat;
         }
-        .login-box { text-align: center; width: 95%; max-width: 450px; padding: 2.5rem; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-radius: 40px; border: 2px solid #D32F2F; }
-        .logo-login { height: 120px; margin-bottom: 2rem; object-fit: contain; }
+
+        .login-photos-top {
+            width: 100%; display: flex; justify-content: center; gap: 10px; margin-bottom: 2rem;
+            background: rgba(0,0,0,0.5); padding: 10px;
+        }
+        .login-photos-top img { height: 60px; object-fit: contain; border-radius: 8px; border: 1px solid #fff; }
+
+        .login-box { 
+            text-align: center; width: 95%; max-width: 450px; padding: 2rem; 
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); 
+            border-radius: 40px; border: 3px solid #D32F2F; 
+        }
+        .logo-login { height: 110px; margin-bottom: 1.5rem; object-fit: contain; }
         
         input, select { 
             width: 100%; padding: 1.1rem; font-size: 1.4rem; text-align: center; 
-            background: #000; border: 2px solid #333; color: #fff; border-radius: 12px;
+            background: #000; border: 2px solid #D32F2F; color: #fff; border-radius: 12px;
             margin-bottom: 1rem; outline: none;
         }
-        input:focus { border-color: #D32F2F; }
-        #pin-input { letter-spacing: 12px; font-size: 2.5rem; font-weight: 900; }
+        #pin-input { font-size: 2.5rem; font-weight: 900; letter-spacing: 15px; }
         
         button { 
             width: 100%; padding: 1.2rem; background: #D32F2F; color: #fff; border: none; border-radius: 15px; font-weight: 900; font-size: 1.2rem; cursor: pointer;
         }
         
-        #app { display: none; height: 100vh; flex-direction: column; padding: 0.5rem; background: transparent; }
-        .topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #D32F2F; padding: 10px 15px; background: rgba(0,0,0,0.9); border-radius: 20px; margin-bottom: 10px; }
+        #app { display: none; height: 100vh; flex-direction: column; padding: 0.5rem; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #D32F2F; padding: 8px 10px; background: rgba(0,0,0,0.9); border-radius: 15px; margin-bottom: 10px; }
 
-        .top-brand { display: flex; align-items: center; gap: 10px; flex: 1; overflow-x: auto; scrollbar-width: none; }
-        .top-brand::-webkit-scrollbar { display: none; }
-        .top-brand img { height: 45px; min-width: 45px; object-fit: contain; flex-shrink: 0; border-radius: 5px; }
+        .top-brand { display: flex; align-items: center; gap: 8px; flex: 1; overflow-x: auto; scrollbar-width: none; }
+        .top-brand img { height: 40px; min-width: 40px; object-fit: contain; flex-shrink: 0; }
 
         .main-container { flex: 1; overflow-y: auto; padding-bottom: 100px; padding: 0 5px; }
         
         .nav { display: flex; gap: 8px; margin-bottom: 1rem; }
-        .nav button { flex: 1; padding: 0.9rem; font-size: 0.9rem; background: #000; border: 1px solid #D32F2F; border-radius: 12px; font-weight: 900; color:#fff; }
-        .nav button.active { background: #D32F2F; color: #fff; }
+        .nav button { flex: 1; padding: 0.9rem; font-size: 0.9rem; background: #111; border: 1px solid #D32F2F; border-radius: 12px; font-weight: 900; color:#fff; }
+        .nav button.active { background: #D32F2F; }
         
         .page { display: none; }
         .page.active { display: block; }
         
-        .stats-banner { background: #D32F2F; color: #fff; padding: 1.2rem; border-radius: 20px; margin-bottom: 1.5rem; display: none; justify-content: space-between; align-items: center; font-weight: 900; box-shadow: 0 10px 25px rgba(211,47,47,0.4); }
+        .stats-banner { background: #D32F2F; color: #fff; padding: 1.2rem; border-radius: 20px; margin-bottom: 1.5rem; display: none; justify-content: space-between; align-items: center; font-weight: 900; }
         .stats-banner span { font-size: 1.6rem; }
 
-        .form-card { background: rgba(0,0,0,0.85); padding: 1.5rem; border-radius: 25px; border: 2px solid #222; }
-        label { color: #D32F2F; font-weight: 900; font-size: 0.8rem; margin-bottom: 6px; display: block; text-transform: uppercase; }
+        .form-card { background: rgba(0,0,0,0.9); padding: 1.5rem; border-radius: 25px; border: 2px solid #D32F2F; }
+        label { color: #D32F2F; font-weight: 900; font-size: 0.8rem; margin-bottom: 6px; display: block; }
         
-        .zone-group { margin-bottom: 2rem; }
-        .zone-header { background: #D32F2F; color: #fff; padding: 8px 20px; font-weight: 900; border-radius: 12px; display: inline-block; margin-bottom: 12px; font-size: 0.9rem; }
+        .entry-card { background: #000; padding: 15px; border-radius: 15px; border: 1px solid #333; border-left: 6px solid #D32F2F; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .entry-info b { color: #fff; display: block; font-size: 1.1rem; }
+        .entry-info small { color: #888; font-size: 0.8rem; }
+        .dates-pill { background: #D32F2F; color: #fff; padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; }
         
-        .entry-card { background: #000; padding: 18px; border-radius: 20px; border: 1px solid #333; border-left: 6px solid #D32F2F; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .entry-info b { color: #fff; display: block; font-size: 1.2rem; text-transform: uppercase; }
-        .entry-info small { color: #aaa; font-size: 0.85rem; font-weight: 500; }
-        .dates-pill { background: #1a1a1a; color: #fff; padding: 6px 12px; border-radius: 10px; font-size: 0.75rem; font-weight: 900; border: 1px solid #D32F2F; }
-        
-        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #D32F2F; color: white; padding: 1rem 2rem; border-radius: 50px; display: none; font-weight: 900; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #toast { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: #D32F2F; color: white; padding: 1rem 2rem; border-radius: 50px; display: none; font-weight: 900; z-index: 3000; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
+        <!-- PHOTOS AT THE TOP OF LOGIN -->
+        <div class="login-photos-top">
+            <img src="assets/images/IMG1.jpg" alt="1">
+            <img src="assets/images/IMG2.jpg" alt="2">
+            <img src="assets/images/IMG3.jpg" alt="3">
+        </div>
+
         <div class="login-box">
             <img src="assets/images/logo_2.jpg" alt="Logo" class="logo-login">
-            <img src="assets/images/EL_ASSIMA.jpg" alt="Nom" style="height:55px; margin-bottom:2rem; object-fit:contain; display:block; margin: 0 auto 2rem;">
+            <img src="assets/images/EL_ASSIMA.jpg" alt="Nom" style="height:50px; display:block; margin: 0 auto 1.5rem; object-fit:contain;">
             <input type="tel" id="pin-input" maxlength="4" placeholder="••••">
-            <button onclick="checkPin()">OUVRIR SESSION</button>
-            <p id="err" style="color:#FFF; margin-top:1.5rem; font-size:0.9rem; font-weight:900;"></p>
+            <button onclick="checkPin()">VALIDER ACCÈS</button>
+            <p id="err" style="color:#FFF; margin-top:1rem; font-weight:900;"></p>
         </div>
     </div>
 
@@ -100,17 +113,17 @@
 
             <div id="form" class="page active">
                 <div class="form-card">
-                    <label>IDENTITÉ DU CLIENT</label>
-                    <input type="text" id="fullname" placeholder="Nom et Prénom..." style="text-align:left; letter-spacing:0; padding:15px;">
+                    <label>NOM ET PRÉNOM</label>
+                    <input type="text" id="fullname" placeholder="..." style="text-align:left; letter-spacing:0; padding:15px;">
                     <div style="display:flex; gap:10px;">
-                        <div style="flex:1;"><label>DATE D'ARRIVÉE</label><input type="date" id="arrival"></div>
-                        <div style="flex:1;"><label>DATE DE SORTIE</label><input type="date" id="departure"></div>
+                        <div style="flex:1;"><label>ARRIVÉE</label><input type="date" id="arrival"></div>
+                        <div style="flex:1;"><label>SORTIE</label><input type="date" id="departure"></div>
                     </div>
-                    <label>ZONE DE RÉSIDENCE</label>
-                    <select id="zone" style="text-align:left; font-size:1.2rem;">
+                    <label>ZONE</label>
+                    <select id="zone" style="text-align:left;">
                         <script>for(let i=1; i<=14; i++) document.write(`<option value="Zone ${i}">Zone ${i}</option>`);</script>
                     </select>
-                    <button onclick="saveData()">CONFIRMER L'INSCRIPTION</button>
+                    <button onclick="saveData()">ENREGISTRER</button>
                 </div>
             </div>
 
@@ -145,20 +158,16 @@
                 appMode = val;
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app').style.display = 'flex';
-                
                 if (val === "2020") {
                     document.getElementById('nav-list').style.display = 'block';
                     document.getElementById('stats-area').style.display = 'flex';
                 } else {
-                    document.getElementById('nav-list').style.display = 'none';
                     document.getElementById('stats-area').style.display = 'none';
                 }
                 loadData();
             } else {
-                const err = document.getElementById('err');
-                err.innerText = "CODE PIN ERRONÉ";
+                document.getElementById('err').innerText = "VÉRIFIEZ LE CODE";
                 document.getElementById('pin-input').value = "";
-                setTimeout(() => err.innerText = "", 2000);
             }
         }
         document.getElementById('pin-input').addEventListener('input', function(e) {
@@ -178,17 +187,17 @@
             const arr = document.getElementById('arrival').value;
             const dep = document.getElementById('departure').value;
             const z = document.getElementById('zone').value;
-            if (!name || !arr || !dep) return toast("CHAMPS OBLIGATOIRES !");
-            btn.disabled = true; btn.innerText = "PATIENTEZ...";
+            if (!name || !arr || !dep) return toast("CHAMPS VIDES");
+            btn.disabled = true;
             try {
                 await db.collection("registrations").add({
                     fullname: name, arrival: arr, departure: dep, zone: z,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                toast("SUCCESS !");
+                toast("SUCCÈS !");
                 document.getElementById('fullname').value = "";
-            } catch(e) { toast("ERREUR CONNEXION"); }
-            btn.disabled = false; btn.innerText = "CONFIRMER L'INSCRIPTION";
+            } catch(e) { toast("ERREUR"); }
+            btn.disabled = false;
         }
 
         function loadData() {
@@ -212,7 +221,7 @@
                         <div class="entry-card">
                             <div class="entry-info">
                                 <b>${item.fullname}</b>
-                                <small>Séjour: ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
+                                <small>Du ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
                             </div>
                             <div class="dates-pill">${formatDate(item.arrival)}</div>
                         </div>`;
