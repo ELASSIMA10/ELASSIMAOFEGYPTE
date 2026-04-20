@@ -39,7 +39,6 @@
 
         .top-brand { display: flex; align-items: center; gap: 8px; flex: 1; overflow: hidden; }
         .top-brand img { height: 32px; object-fit: contain; }
-        .assima-name-img { height: 32px !important; }
 
         .main-container { flex: 1; overflow-y: auto; padding-bottom: 100px; padding: 0 5px; }
         
@@ -50,7 +49,7 @@
         .page { display: none; }
         .page.active { display: block; }
         
-        .stats-banner { background: #D32F2F; color: #fff; padding: 1rem; border-radius: 20px; margin-bottom: 1.5rem; display: none; justify-content: space-between; align-items: center; font-weight: 900; box-shadow: 0 10px 20px rgba(211,47,47,0.3); }
+        .stats-banner { background: #D32F2F; color: #fff; padding: 1rem; border-radius: 15px; margin-bottom: 1.5rem; display: none; justify-content: space-between; align-items: center; font-weight: 900; box-shadow: 0 8px 15px rgba(211,47,47,0.3); }
         .stats-banner span { font-size: 1.4rem; }
 
         .form-card { background: rgba(0,0,0,0.8); padding: 1.5rem; border-radius: 20px; border: 1px solid #222; }
@@ -84,7 +83,6 @@
             <div class="top-brand">
                 <img src="assets/images/logo_2.jpg" alt="Logo">
                 <img src="assets/images/EL ASSIMA.jpeg" alt="Assima" class="assima-name-img">
-                <!-- NEW PHOTOS ADDED NEXT TO NAME -->
                 <img src="assets/images/PINS.png" alt="P">
                 <img src="assets/images/STICKERS.jpeg" alt="S">
                 <img src="assets/images/porte-clé.jpeg" alt="K">
@@ -99,11 +97,6 @@
             </div>
 
             <div id="form" class="page active">
-                <div id="stats-area" class="stats-banner">
-                    <div>TOTAL RÉSERVATIONS</div>
-                    <span id="total-saisie">0</span>
-                </div>
-
                 <div class="form-card">
                     <label>IDENTITÉ DU CLIENT</label>
                     <input type="text" id="fullname" placeholder="Nom complet..." style="text-align:left; letter-spacing:0; padding:12px;">
@@ -120,7 +113,12 @@
             </div>
 
             <div id="list" class="page">
-                 <div id="data-list"></div>
+                 <!-- TOTAL RESERVATIONS MOVED HERE -->
+                 <div id="stats-area" class="stats-banner">
+                    <div>TOTAL RÉSERVATIONS</div>
+                    <span id="total-count">0</span>
+                </div>
+                <div id="data-list"></div>
             </div>
         </div>
     </div>
@@ -193,10 +191,10 @@
         function loadData() {
             db.collection("registrations").orderBy("timestamp", "desc").onSnapshot(snap => {
                 const list = document.getElementById('data-list');
-                const totalSaisieEl = document.getElementById('total-saisie');
+                const totalCountEl = document.getElementById('total-count');
                 
                 const total = snap.size;
-                if (totalSaisieEl && appMode === "2020") totalSaisieEl.innerText = total;
+                if (totalCountEl) totalCountEl.innerText = total;
 
                 list.innerHTML = "";
                 const grouped = {};
