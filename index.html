@@ -23,27 +23,29 @@
 
   <!-- SPLASH SCREEN -->
   <div id="splash">
-    <div class="splash-logo">
-      <img src="assets/images/logo.webp" alt="EL ASSIMA LOGO" style="width: 130px; height: 130px; object-fit: contain;">
+    <div class="splash-logos">
+      <img src="assets/images/logo.webp" alt="LOGO LEFT">
+      <img src="assets/images/logo_2.jpg" alt="LOGO RIGHT">
     </div>
     <h1 class="splash-title">EL ASSIMA</h1>
-    <p class="splash-sub">Egypt Edition</p>
+    <p class="splash-sub" style="color:#D32F2F; letter-spacing:8px; font-weight:800;">EGYPT</p>
   </div>
 
   <!-- LOGIN SCREEN (Restored with codes 0101 and 2020) -->
   <div id="login-screen">
     <div class="login-wrapper">
-      <div class="login-logo-container">
-        <img src="assets/images/logo.webp" alt="EL ASSIMA" class="main-login-logo">
+      <div class="login-logos-container">
+        <img src="assets/images/logo.webp" alt="LOGO LEFT">
+        <img src="assets/images/logo_2.jpg" alt="LOGO RIGHT">
       </div>
       
       <div class="pin-entry-box">
-        <label>CODE D'ACCÈS</label>
+        <label>CODE PIN D'ACCÈS</label>
         <div class="pin-input-group">
           <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="••••">
         </div>
         <div id="pin-error" class="error-text"></div>
-        <button class="btn-unlock" onclick="handleLogin()">OUVRIR LA SESSION</button>
+        <button class="btn-unlock" onclick="handleLogin()">AUTHENTIFICATION</button>
       </div>
     </div>
   </div>
@@ -51,11 +53,10 @@
   <!-- MAIN APP -->
   <div id="app">
     <header class="topbar">
-      <div class="brand">
-        <div class="top-logo">
-          <img src="assets/images/logo.webp" alt="LOGO" style="width: 30px; height: 30px; object-fit: contain;">
-        </div>
-        <div class="top-name">ASSIMA EGYPT</div>
+      <div class="top-logos">
+        <img src="assets/images/logo.webp" alt="L">
+        <img src="assets/images/logo_2.jpg" alt="R">
+        <div class="top-name" style="margin-left:0.5rem">ASSIMA EGYPT</div>
       </div>
       <div class="top-actions">
         <span id="current-date" class="date-badge">--/--/----</span>
@@ -69,29 +70,29 @@
       <section id="page-form" class="page active">
         <div class="page-header">
           <h1>Saisie</h1>
-          <p>Enregistrement des réservations</p>
+          <p>Enregistrement Arrivée/Sortie</p>
         </div>
         <div class="form-container">
           <form id="guest-form" onsubmit="submitForm(event)">
             <div class="input-group">
               <label>NOM ET PRÉNOM</label>
-              <input type="text" id="fullname" placeholder="Nom complet du client" required autocomplete="off">
+              <input type="text" id="fullname" placeholder="Nom complet" required autocomplete="off">
             </div>
             <div class="input-row">
-              <div class="input-group"><label>DATE ARRIVÉE</label><input type="date" id="arrival-date" required></div>
-              <div class="input-group"><label>DATE SORTIE</label><input type="date" id="departure-date" required></div>
+              <div class="input-group"><label>ARRIVÉE</label><input type="date" id="arrival-date" required></div>
+              <div class="input-group"><label>SORTIE</label><input type="date" id="departure-date" required></div>
             </div>
             <div class="input-group">
               <label>ZONE / EMPLACEMENT</label>
               <select id="zone" required>
-                <option value="" disabled selected>Sélectionnez...</option>
+                <option value="" disabled selected>Choisir la zone...</option>
                 <option value="Premium">Zone Premium</option>
                 <option value="Standard">Zone Standard</option>
                 <option value="VIP">Espace VIP</option>
                 <option value="Terrasse">Terrasse</option>
               </select>
             </div>
-            <button type="submit" class="btn-gold-wide">ENREGISTRER</button>
+            <button type="submit" class="btn-red-wide">VALIDER L'ENTRÉE</button>
           </form>
         </div>
       </section>
@@ -100,7 +101,7 @@
       <section id="page-list" class="page">
         <div class="page-header">
           <h1>Planning</h1>
-          <p>Suivi des réservations</p>
+          <p>Liste des Réservations</p>
         </div>
         <div class="view-tabs">
           <button class="active" id="btn-tab-arrivals" onclick="switchTab('arrivals')">Arrivées</button>
