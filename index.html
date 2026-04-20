@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="EL ASSIMA EGYPT - Gestion des Réservations">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ASSIMA EGY">
+  <title>EL ASSIMA EGYPT | Réservations</title>
+  
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2821/2821785.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
+  
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- SPLASH SCREEN -->
+  <div id="splash">
+    <div class="splash-logo">
+      <svg width="60" height="60" viewBox="0 0 100 100">
+        <path d="M20 80 L50 20 L80 80" fill="none" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
+        <path d="M35 55 L65 55" stroke="#D4AF37" stroke-width="4"/>
+      </svg>
+    </div>
+    <h1 class="splash-title">EL ASSIMA</h1>
+    <p class="splash-sub">Egypt Edition</p>
+  </div>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-logo">
+        <svg width="40" height="40" viewBox="0 0 100 100">
+          <path d="M20 80 L50 20 L80 80" fill="none" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
+          <path d="M35 55 L65 55" stroke="#D4AF37" stroke-width="4"/>
+        </svg>
+      </div>
+      <h2 class="login-title">Identification</h2>
+      <p class="login-sub">Saisissez votre code d'accès</p>
+      
+      <div class="pin-container">
+        <label>CODE PIN</label>
+        <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="••••">
+        <div id="pin-error" class="error-msg" style="color:var(--gold); font-size:0.7rem; margin-top:0.5rem; height:1rem"></div>
+      </div>
+      
+      <button class="btn-gold-wide" onclick="handleLogin()">ENTRER</button>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="top-logo">
+          <svg width="25" height="25" viewBox="0 0 100 100">
+            <path d="M20 80 L50 20 L80 80" fill="none" stroke="#D4AF37" stroke-width="8" stroke-linecap="round"/>
+            <path d="M35 55 L65 55" stroke="#D4AF37" stroke-width="4"/>
+          </svg>
+        </div>
+        <div class="top-name">ASSIMA EGYPT</div>
+      </div>
+      <button class="logout-btn" onclick="logout()" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer">🚪</button>
+    </header>
+
+    <main class="page-container">
+      <section id="page-form" class="page active">
+        <div class="page-header">
+          <h1>Saisie</h1>
+          <p>Enregistrement des données</p>
+        </div>
+        <div class="form-container">
+          <form id="guest-form" onsubmit="submitForm(event)">
+            <div class="input-group">
+              <label>NOM ET PRÉNOM</label>
+              <input type="text" id="fullname" placeholder="Nom du client" required>
+            </div>
+            <div class="input-row">
+              <div class="input-group"><label>ARRIVÉE</label><input type="date" id="arrival-date" required></div>
+              <div class="input-group"><label>SORTIE</label><input type="date" id="departure-date" required></div>
+            </div>
+            <div class="input-group">
+              <label>ZONE</label>
+              <select id="zone" required>
+                <option value="" disabled selected>Choisir...</option>
+                <option value="Premium">Zone Premium</option>
+                <option value="Standard">Zone Standard</option>
+                <option value="VIP">Espace VIP</option>
+                <option value="Terrasse">Terrasse</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-gold-wide">ENREGISTRER</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="page-list" class="page">
+        <div class="page-header">
+          <h1>Planning</h1>
+          <p>Arrivées & Sorties</p>
+        </div>
+        <div class="view-tabs">
+          <button class="active" onclick="switchTab('arrivals')">Arrivées</button>
+          <button onclick="switchTab('departures')">Sorties</button>
+        </div>
+        <div id="tab-arrivals" class="tab-content active"><div id="arrivals-container"></div></div>
+        <div id="tab-departures" class="tab-content"><div id="departures-container"></div></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <div class="nav-item active" id="nav-form" onclick="switchPage('form')"><div class="nav-icon">📝</div><span>Saisie</span></div>
+      <div class="nav-item" id="nav-list" onclick="switchPage('list')"><div class="nav-icon">📅</div><span>Planning</span></div>
+    </nav>
+  </div>
+
+  <div id="toast">Opération réussie</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
