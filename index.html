@@ -48,7 +48,7 @@
         .page { display: none; }
         .page.active { display: block; }
         
-        .stats-banner { background: #D32F2F; color: #fff; padding: 1rem; border-radius: 20px; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; font-weight: 900; box-shadow: 0 10px 20px rgba(211,47,47,0.3); }
+        .stats-banner { background: #D32F2F; color: #fff; padding: 1rem; border-radius: 20px; margin-bottom: 1.5rem; display: none; justify-content: space-between; align-items: center; font-weight: 900; box-shadow: 0 10px 20px rgba(211,47,47,0.3); }
         .stats-banner span { font-size: 1.4rem; }
 
         .form-card { background: rgba(0,0,0,0.8); padding: 1.5rem; border-radius: 20px; border: 1px solid #222; }
@@ -93,8 +93,8 @@
             </div>
 
             <div id="form" class="page active">
-                <!-- STATS TOTAL ON SAISIE PAGE -->
-                <div class="stats-banner">
+                <!-- STATS TOTAL (Visible only for 2020) -->
+                <div id="stats-area" class="stats-banner">
                     <div>TOTAL RÉSERVATIONS</div>
                     <span id="total-saisie">0</span>
                 </div>
@@ -115,7 +115,6 @@
             </div>
 
             <div id="list" class="page">
-                 <!-- Also show total here if needed -->
                  <div id="data-list"></div>
             </div>
         </div>
@@ -142,7 +141,14 @@
                 appMode = val;
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app').style.display = 'flex';
-                if (val === "2020") document.getElementById('nav-list').style.display = 'block';
+                
+                if (val === "2020") {
+                    document.getElementById('nav-list').style.display = 'block';
+                    document.getElementById('stats-area').style.display = 'flex';
+                } else {
+                    document.getElementById('nav-list').style.display = 'none';
+                    document.getElementById('stats-area').style.display = 'none';
+                }
                 loadData();
             } else {
                 document.getElementById('err').innerText = "CODE FAUX";
@@ -185,7 +191,7 @@
                 const totalSaisieEl = document.getElementById('total-saisie');
                 
                 const total = snap.size;
-                if (totalSaisieEl) totalSaisieEl.innerText = total;
+                if (totalSaisieEl && appMode === "2020") totalSaisieEl.innerText = total;
 
                 list.innerHTML = "";
                 const grouped = {};
