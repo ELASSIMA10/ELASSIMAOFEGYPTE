@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="ASSIMA EGY">
   <title>EL ASSIMA EGYPT | Réservations</title>
   
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2821/2821785.png">
+  <link rel="apple-touch-icon" href="assets/images/logo.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
@@ -30,27 +30,8 @@
     <p class="splash-sub">Egypt Edition</p>
   </div>
 
-  <!-- LOGIN SCREEN -->
-  <div id="login-screen">
-    <div class="login-box">
-      <div class="login-logo">
-        <img src="assets/images/logo.webp" alt="EL ASSIMA LOGO" style="width: 70px; height: 70px; object-fit: contain;">
-      </div>
-      <h2 class="login-title">Identification</h2>
-      <p class="login-sub">Saisissez votre code d'accès</p>
-      
-      <div class="pin-container">
-        <label>CODE PIN</label>
-        <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="••••">
-        <div id="pin-error" class="error-msg" style="color:var(--gold); font-size:0.7rem; margin-top:0.5rem; height:1rem"></div>
-      </div>
-      
-      <button class="btn-gold-wide" onclick="handleLogin()">ENTRER</button>
-    </div>
-  </div>
-
-  <!-- MAIN APP -->
-  <div id="app">
+  <!-- MAIN APP (Visible by default, no code) -->
+  <div id="app" style="display: flex;">
     <header class="topbar">
       <div class="brand">
         <div class="top-logo">
@@ -58,27 +39,26 @@
         </div>
         <div class="top-name">ASSIMA EGYPT</div>
       </div>
-      <button class="logout-btn" onclick="logout()" style="background:transparent; border:none; font-size:1.2rem; cursor:pointer">🚪</button>
+      <div class="status-indicator" id="current-date">--/--/----</div>
     </header>
 
     <main class="page-container">
+      
+      <!-- PAGE: SAISIE -->
       <section id="page-form" class="page active">
         <div class="page-header">
           <h1>Saisie</h1>
-          <p>Enregistrement des données</p>
+          <p>Nouvel enregistrement</p>
         </div>
         <div class="form-container">
           <form id="guest-form" onsubmit="submitForm(event)">
-            <div class="input-group">
-              <label>NOM ET PRÉNOM</label>
-              <input type="text" id="fullname" placeholder="Nom du client" required>
-            </div>
+            <div class="input-group"><label>NOM ET PRÉNOM</label><input type="text" id="fullname" placeholder="Nom complet" required></div>
             <div class="input-row">
-              <div class="input-group"><label>ARRIVÉE</label><input type="date" id="arrival-date" required></div>
-              <div class="input-group"><label>SORTIE</label><input type="date" id="departure-date" required></div>
+              <div class="input-group" style="margin:0"><label>ARRIVÉE</label><input type="date" id="arrival-date" required></div>
+              <div class="input-group" style="margin:0"><label>SORTIE</label><input type="date" id="departure-date" required></div>
             </div>
             <div class="input-group">
-              <label>ZONE</label>
+              <label>ZONE / EMPLACEMENT</label>
               <select id="zone" required>
                 <option value="" disabled selected>Choisir...</option>
                 <option value="Premium">Zone Premium</option>
@@ -87,15 +67,16 @@
                 <option value="Terrasse">Terrasse</option>
               </select>
             </div>
-            <button type="submit" class="btn-gold-wide">ENREGISTRER</button>
+            <button type="submit" class="btn-gold-wide">VALIDER</button>
           </form>
         </div>
       </section>
 
+      <!-- PAGE: PLANNING -->
       <section id="page-list" class="page">
         <div class="page-header">
           <h1>Planning</h1>
-          <p>Arrivées & Sorties</p>
+          <p>Fiches de réservations</p>
         </div>
         <div class="view-tabs">
           <button class="active" onclick="switchTab('arrivals')">Arrivées</button>
@@ -104,11 +85,17 @@
         <div id="tab-arrivals" class="tab-content active"><div id="arrivals-container"></div></div>
         <div id="tab-departures" class="tab-content"><div id="departures-container"></div></div>
       </section>
+
     </main>
 
+    <!-- BOTTOM NAV (Always visible) -->
     <nav class="bottom-nav">
-      <div class="nav-item active" id="nav-form" onclick="switchPage('form')"><div class="nav-icon">📝</div><span>Saisie</span></div>
-      <div class="nav-item" id="nav-list" onclick="switchPage('list')"><div class="nav-icon">📅</div><span>Planning</span></div>
+      <div class="nav-item active" id="nav-form" onclick="switchPage('form')">
+        <div class="nav-icon">📝</div><span>Saisie</span>
+      </div>
+      <div class="nav-item" id="nav-list" onclick="switchPage('list')">
+        <div class="nav-icon">📅</div><span>Planning</span>
+      </div>
     </nav>
   </div>
 
