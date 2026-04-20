@@ -25,14 +25,12 @@
 
   <!-- LOGIN SCREEN -->
   <div id="login-screen">
-    <div class="login-header-logos">
-      <img src="assets/images/logo.webp" alt="Logo L">
-      <img src="assets/images/logo_2.jpg" alt="Logo R">
-    </div>
-    
     <div class="login-center">
       <div class="pin-box">
-        <label>CODE PIN D'ACCÈS</label>
+        <div class="login-logo-container" style="margin-bottom: 2rem;">
+          <img src="assets/images/logo.webp" alt="EL ASSIMA 10" style="width: 150px; height: 150px; object-fit: contain;">
+        </div>
+        <label>LOGUEZ-VOUS</label>
         <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="••••">
         <div id="pin-error" class="error-text"></div>
         <button class="btn-unlock" onclick="handleLogin()">ENTRER</button>
@@ -44,8 +42,7 @@
   <div id="app">
     <header class="topbar">
       <div class="top-logos">
-        <img src="assets/images/logo.webp" alt="L">
-        <img src="assets/images/logo_2.jpg" alt="R">
+        <img src="assets/images/logo.webp" alt="LOGO">
         <div class="top-title" style="margin-left:10px">ASSIMA EGYPT</div>
       </div>
       <div class="top-actions">
