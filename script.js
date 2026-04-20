@@ -29,6 +29,17 @@ window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => { splash.style.display = 'none'; }, 800);
   }, 2000);
 
+  // Auto-submit PIN after 4 digits
+  const pinInput = document.getElementById('pin-input');
+  if (pinInput) {
+    pinInput.addEventListener('input', (e) => {
+      if (e.target.value.length === 4) handleLogin();
+    });
+    pinInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleLogin();
+    });
+  }
+
   initFirebaseListeners();
 });
 

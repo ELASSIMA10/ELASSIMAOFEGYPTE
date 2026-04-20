@@ -6,17 +6,11 @@
   <meta name="description" content="EL ASSIMA EGYPT - Gestion des Réservations">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ASSIMA EGY">
   <title>EL ASSIMA EGYPT | Réservations</title>
-  
   <link rel="apple-touch-icon" href="assets/images/logo.webp">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,28 +18,24 @@
   <!-- SPLASH SCREEN -->
   <div id="splash">
     <div class="splash-logos">
-      <img src="assets/images/logo.webp" alt="LOGO LEFT">
-      <img src="assets/images/logo_2.jpg" alt="LOGO RIGHT">
+      <img src="assets/images/logo.webp" alt="Logo L">
+      <img src="assets/images/logo_2.jpg" alt="Logo R">
     </div>
-    <h1 class="splash-title">EL ASSIMA</h1>
-    <p class="splash-sub" style="color:#D32F2F; letter-spacing:8px; font-weight:800;">EGYPT</p>
   </div>
 
-  <!-- LOGIN SCREEN (Restored with codes 0101 and 2020) -->
+  <!-- LOGIN SCREEN -->
   <div id="login-screen">
-    <div class="login-wrapper">
-      <div class="login-logos-container">
-        <img src="assets/images/logo.webp" alt="LOGO LEFT">
-        <img src="assets/images/logo_2.jpg" alt="LOGO RIGHT">
-      </div>
-      
-      <div class="pin-entry-box">
+    <div class="login-header-logos">
+      <img src="assets/images/logo.webp" alt="Logo L">
+      <img src="assets/images/logo_2.jpg" alt="Logo R">
+    </div>
+    
+    <div class="login-center">
+      <div class="pin-box">
         <label>CODE PIN D'ACCÈS</label>
-        <div class="pin-input-group">
-          <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="••••">
-        </div>
+        <input type="password" id="pin-input" maxlength="4" inputmode="numeric" placeholder="••••">
         <div id="pin-error" class="error-text"></div>
-        <button class="btn-unlock" onclick="handleLogin()">AUTHENTIFICATION</button>
+        <button class="btn-unlock" onclick="handleLogin()">ENTRER</button>
       </div>
     </div>
   </div>
@@ -56,76 +46,67 @@
       <div class="top-logos">
         <img src="assets/images/logo.webp" alt="L">
         <img src="assets/images/logo_2.jpg" alt="R">
-        <div class="top-name" style="margin-left:0.5rem">ASSIMA EGYPT</div>
+        <div class="top-title" style="margin-left:10px">ASSIMA EGYPT</div>
       </div>
       <div class="top-actions">
         <span id="current-date" class="date-badge">--/--/----</span>
-        <button class="logout-mini" onclick="logout()">🚪</button>
+        <button onclick="logout()" style="background:none; border:none; cursor:pointer; font-size:1.5rem">🚪</button>
       </div>
     </header>
 
     <main class="page-container">
-      
-      <!-- SAISIE -->
       <section id="page-form" class="page active">
-        <div class="page-header">
-          <h1>Saisie</h1>
-          <p>Enregistrement Arrivée/Sortie</p>
+        <div class="page-header" style="margin-bottom:1.5rem; text-align:center;">
+          <h1>SAISIE</h1>
         </div>
         <div class="form-container">
           <form id="guest-form" onsubmit="submitForm(event)">
-            <div class="input-group">
-              <label>NOM ET PRÉNOM</label>
-              <input type="text" id="fullname" placeholder="Nom complet" required autocomplete="off">
-            </div>
+            <label>NOM ET PRÉNOM</label>
+            <input type="text" id="fullname" placeholder="Nom complet" required autocomplete="off">
+            
             <div class="input-row">
-              <div class="input-group"><label>ARRIVÉE</label><input type="date" id="arrival-date" required></div>
-              <div class="input-group"><label>SORTIE</label><input type="date" id="departure-date" required></div>
+              <div class="group"><label>ARRIVÉE</label><input type="date" id="arrival-date" required></div>
+              <div class="group"><label>SORTIE</label><input type="date" id="departure-date" required></div>
             </div>
-            <div class="input-group">
-              <label>ZONE / EMPLACEMENT</label>
-              <select id="zone" required>
-                <option value="" disabled selected>Choisir la zone...</option>
-                <option value="Premium">Zone Premium</option>
-                <option value="Standard">Zone Standard</option>
-                <option value="VIP">Espace VIP</option>
-                <option value="Terrasse">Terrasse</option>
-              </select>
-            </div>
-            <button type="submit" class="btn-red-wide">VALIDER L'ENTRÉE</button>
+            
+            <label>ZONE</label>
+            <select id="zone" required>
+              <option value="" disabled selected>Choisir la zone</option>
+              <option value="Premium">Zone Premium</option>
+              <option value="Standard">Zone Standard</option>
+              <option value="VIP">Espace VIP</option>
+              <option value="Terrasse">Terrasse</option>
+            </select>
+            
+            <button type="submit" class="btn-red">ENREGISTRER</button>
           </form>
         </div>
       </section>
 
-      <!-- PLANNING -->
       <section id="page-list" class="page">
-        <div class="page-header">
-          <h1>Planning</h1>
-          <p>Liste des Réservations</p>
+        <div class="page-header" style="margin-bottom:1.5rem; text-align:center;">
+          <h1>PLANNING</h1>
         </div>
         <div class="view-tabs">
-          <button class="active" id="btn-tab-arrivals" onclick="switchTab('arrivals')">Arrivées</button>
-          <button id="btn-tab-departures" onclick="switchTab('departures')">Sorties</button>
+          <button class="active" id="btn-tab-arrivals" onclick="switchTab('arrivals')">ARRIVÉES</button>
+          <button id="btn-tab-departures" onclick="switchTab('departures')">SORTIES</button>
         </div>
         <div id="tab-arrivals" class="tab-content active"><div id="arrivals-container"></div></div>
         <div id="tab-departures" class="tab-content"><div id="departures-container"></div></div>
       </section>
-
     </main>
 
-    <!-- NAVIGATION -->
     <nav class="bottom-nav">
       <div class="nav-item active" id="nav-form" onclick="switchPage('form')">
-        <div class="nav-icon">📝</div><span>Saisie</span>
+        <div style="font-size:1.5rem">📝</div><span>SAISIE</span>
       </div>
       <div class="nav-item" id="nav-list" onclick="switchPage('list')">
-        <div class="nav-icon">📅</div><span>Planning</span>
+        <div style="font-size:1.5rem">📅</div><span>PLANNING</span>
       </div>
     </nav>
   </div>
 
   <div id="toast">Opération réussie</div>
-
   <script src="script.js"></script>
 </body>
 </html>
