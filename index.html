@@ -102,6 +102,10 @@
                         <div style="flex:1;"><label>ARRIVÉE</label><input type="date" id="arrival"></div>
                         <div style="flex:1;"><label>SORTIE</label><input type="date" id="departure"></div>
                     </div>
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1;"><label>HEURE D'ARRIVÉE</label><input type="time" id="arrival_time"></div>
+                        <div style="flex:1;"><label>HEURE DE DÉPART</label><input type="time" id="departure_time"></div>
+                    </div>
                     <label>ZONE</label>
                     <select id="zone" style="text-align:left;">
                         <script>for(let i=1; i<=14; i++) document.write(`<option value="Zone ${i}">Zone ${i}</option>`);</script>
@@ -146,6 +150,7 @@
                     document.getElementById('stats-area').style.display = 'flex';
                 }
                 loadData();
+                setCurrentTime();
             } else {
                 document.getElementById('err').innerText = "CODE FAUX";
                 document.getElementById('pin-input').value = "";
@@ -168,15 +173,21 @@
             const arr = document.getElementById('arrival').value;
             const dep = document.getElementById('departure').value;
             const z = document.getElementById('zone').value;
+            const arrTime = document.getElementById('arrival_time').value;
+            const depTime = document.getElementById('departure_time').value;
             if (!name || !arr || !dep) return toast("CHAMPS VIDES");
             btn.disabled = true;
             try {
                 await db.collection("registrations").add({
-                    fullname: name, arrival: arr, departure: dep, zone: z,
+                    fullname: name, arrival: arr, departure: dep, 
+                    arrival_time: arrTime, departure_time: depTime, 
+                    zone: z,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 toast("ENREGISTRÉ !");
                 document.getElementById('fullname').value = "";
+                setCurrentTime();
+                document.getElementById('departure_time').value = "";
             } catch(e) { toast("ERREUR"); }
             btn.disabled = false;
         }
@@ -202,7 +213,7 @@
                         <div class="entry-card">
                             <div class="entry-info">
                                 <b>${item.fullname}</b>
-                                <small>Séjour: ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
+                                <small>Séjour: ${formatDate(item.arrival)} <span style="color:#D32F2F">${item.arrival_time || ''}</span> au ${formatDate(item.departure)} <span style="color:#D32F2F">${item.departure_time || ''}</span></small>
                             </div>
                             <div class="dates-pill">${formatDate(item.arrival)}</div>
                         </div>`;
@@ -216,6 +227,16 @@
         function formatDate(s) {
             if (!s) return "-";
             const p = s.split('-'); return p[2] + "/" + p[1];
+        }
+
+        function setCurrentTime() {
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            const today = now.toISOString().split('T')[0];
+            
+            document.getElementById('arrival_time').value = time;
+            document.getElementById('arrival').value = today;
+            document.getElementById('departure').value = today;
         }
 
         function toast(m) {
