@@ -60,6 +60,7 @@
         .entry-card { background: #000; padding: 15px; border-radius: 15px; border: 1px solid #222; border-left: 5px solid #D32F2F; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .entry-info b { color: #fff; display: block; }
         .dates-pill { background: #D32F2F; color: #fff; padding: 4px 8px; border-radius: 8px; font-size: 0.7rem; font-weight: 900; }
+        .zone-header { background: #111; color: #D32F2F; padding: 10px; font-weight: 900; border-radius: 10px; margin: 15px 0 10px; border: 1px solid #331; text-align: center; }
         
         #toast { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); background: #D32F2F; color: white; padding: 10px 20px; border-radius: 20px; display: none; font-weight: 900; z-index: 3000; }
     </style>
@@ -92,6 +93,7 @@
             <div class="nav">
                 <button id="nav-form" class="active" onclick="showPage('form')">SAISIE</button>
                 <button id="nav-list" onclick="showPage('list')" style="display:none;">PLANNING</button>
+                <button id="nav-dates" onclick="showPage('dates')" style="display:none;">DATES</button>
             </div>
 
             <div id="form" class="page active">
@@ -101,10 +103,6 @@
                     <div style="display:flex; gap:10px;">
                         <div style="flex:1;"><label>ARRIVÉE</label><input type="date" id="arrival"></div>
                         <div style="flex:1;"><label>SORTIE</label><input type="date" id="departure"></div>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <div style="flex:1;"><label>HEURE D'ARRIVÉE</label><input type="time" id="arrival_time"></div>
-                        <div style="flex:1;"><label>HEURE DE DÉPART</label><input type="time" id="departure_time"></div>
                     </div>
                     <label>ZONE</label>
                     <select id="zone" style="text-align:left;">
@@ -120,6 +118,11 @@
                     <span id="total-count">0</span>
                 </div>
                 <div id="data-list"></div>
+            </div>
+
+            <div id="dates" class="page">
+                <h3 style="color:#D32F2F; text-align:center; padding:10px 0; margin-bottom: 10px;">RÉSERVATIONS PAR DATE</h3>
+                <div id="dates-list"></div>
             </div>
         </div>
     </div>
@@ -147,6 +150,7 @@
                 document.getElementById('app').style.display = 'flex';
                 if (val === "2020") {
                     document.getElementById('nav-list').style.display = 'block';
+                    document.getElementById('nav-dates').style.display = 'block';
                     document.getElementById('stats-area').style.display = 'flex';
                 }
                 loadData();
@@ -173,21 +177,17 @@
             const arr = document.getElementById('arrival').value;
             const dep = document.getElementById('departure').value;
             const z = document.getElementById('zone').value;
-            const arrTime = document.getElementById('arrival_time').value;
-            const depTime = document.getElementById('departure_time').value;
             if (!name || !arr || !dep) return toast("CHAMPS VIDES");
             btn.disabled = true;
             try {
                 await db.collection("registrations").add({
                     fullname: name, arrival: arr, departure: dep, 
-                    arrival_time: arrTime, departure_time: depTime, 
                     zone: z,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 toast("ENREGISTRÉ !");
                 document.getElementById('fullname').value = "";
                 setCurrentTime();
-                document.getElementById('departure_time').value = "";
             } catch(e) { toast("ERREUR"); }
             btn.disabled = false;
         }
@@ -213,13 +213,41 @@
                         <div class="entry-card">
                             <div class="entry-info">
                                 <b>${item.fullname}</b>
-                                <small>Séjour: ${formatDate(item.arrival)} <span style="color:#D32F2F">${item.arrival_time || ''}</span> au ${formatDate(item.departure)} <span style="color:#D32F2F">${item.departure_time || ''}</span></small>
+                                <small>Séjour: ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
                             </div>
                             <div class="dates-pill">${formatDate(item.arrival)}</div>
                         </div>`;
                     });
                     html += `</div>`;
                     list.innerHTML += html;
+                });
+
+                // Groupement par Date d'arrivée puis par Zone
+                const groupedByDate = {};
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    if(!groupedByDate[d.arrival]) groupedByDate[d.arrival] = {};
+                    if(!groupedByDate[d.arrival][d.zone]) groupedByDate[d.arrival][d.zone] = [];
+                    groupedByDate[d.arrival][d.zone].push(d);
+                });
+                
+                const datesList = document.getElementById('dates-list');
+                datesList.innerHTML = "";
+                Object.keys(groupedByDate).sort().forEach(date => {
+                    let dHtml = `<div style="background:#D32F2F; color:white; padding:10px; font-weight:900; border-radius:10px; margin-top:20px; text-align:center; font-size:1.1rem; letter-spacing:2px;">ARRIVÉE : ${formatDate(date)}</div>`;
+                    const zones = groupedByDate[date];
+                    Object.keys(zones).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(z => {
+                        dHtml += `<div style="margin:10px 0 5px 10px; color:#D32F2F; font-weight:900; font-size:0.9rem;">${z} (${zones[z].length})</div>`;
+                        zones[z].forEach(item => {
+                            dHtml += `
+                            <div class="entry-card" style="margin-left:10px; padding:10px;">
+                                <div class="entry-info">
+                                    <b style="color:#fff;">${item.fullname}</b>
+                                </div>
+                            </div>`;
+                        });
+                    });
+                    datesList.innerHTML += dHtml;
                 });
             });
         }
@@ -231,10 +259,8 @@
 
         function setCurrentTime() {
             const now = new Date();
-            const time = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
             const today = now.toISOString().split('T')[0];
             
-            document.getElementById('arrival_time').value = time;
             document.getElementById('arrival').value = today;
             document.getElementById('departure').value = today;
         }
