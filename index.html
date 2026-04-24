@@ -202,6 +202,7 @@
                 const grouped = {};
                 snap.forEach(doc => {
                     const d = doc.data();
+                    d.id = doc.id; // Store ID for deletion
                     if (!grouped[d.zone]) grouped[d.zone] = [];
                     grouped[d.zone].push(d);
                 });
@@ -215,7 +216,10 @@
                                 <b>${item.fullname}</b>
                                 <small>Séjour: ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
                             </div>
-                            <div class="dates-pill">${formatDate(item.arrival)}</div>
+                            <div style="display:flex; align-items:center; gap: 10px;">
+                                <div class="dates-pill">${formatDate(item.arrival)}</div>
+                                <button onclick="deleteEntry('${item.id}')" style="background:none; border:none; cursor:pointer; font-size:1.5rem;" title="Supprimer / Réinitialiser">❌</button>
+                            </div>
                         </div>`;
                     });
                     html += `</div>`;
@@ -244,6 +248,7 @@
                                 <div class="entry-info">
                                     <b style="color:#fff;">${item.fullname}</b>
                                 </div>
+                                <button onclick="deleteEntry('${item.id}')" style="background:none; border:none; cursor:pointer; font-size:1.5rem;" title="Supprimer / Réinitialiser">❌</button>
                             </div>`;
                         });
                     });
@@ -263,6 +268,17 @@
             
             document.getElementById('arrival').value = today;
             document.getElementById('departure').value = today;
+        }
+
+        async function deleteEntry(id) {
+            if(confirm("Êtes-vous sûr de vouloir supprimer / réinitialiser ce membre ?")) {
+                try {
+                    await db.collection("registrations").doc(id).delete();
+                    toast("MEMBRE SUPPRIMÉ !");
+                } catch(e) {
+                    toast("ERREUR");
+                }
+            }
         }
 
         function toast(m) {
