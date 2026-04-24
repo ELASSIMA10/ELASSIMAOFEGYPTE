@@ -98,7 +98,7 @@
 
             <div id="form" class="page active">
                 <div class="form-card">
-                    <label>CLIENT</label>
+                    <label>MEMBRE</label>
                     <input type="text" id="fullname" placeholder="..." style="text-align:left; letter-spacing:0; padding:12px;">
                     <div style="display:flex; gap:10px;">
                         <div style="flex:1;"><label>ARRIVÉE</label><input type="date" id="arrival"></div>
@@ -226,20 +226,22 @@
                     list.innerHTML += html;
                 });
 
-                // Groupement par Date d'arrivée puis par Zone
+                // Groupement par Période (Arrivée -> Départ) puis par Zone
                 const groupedByDate = {};
                 snap.forEach(doc => {
                     const d = doc.data();
-                    if(!groupedByDate[d.arrival]) groupedByDate[d.arrival] = {};
-                    if(!groupedByDate[d.arrival][d.zone]) groupedByDate[d.arrival][d.zone] = [];
-                    groupedByDate[d.arrival][d.zone].push(d);
+                    const period = `${d.arrival}_${d.departure}`;
+                    if(!groupedByDate[period]) groupedByDate[period] = {};
+                    if(!groupedByDate[period][d.zone]) groupedByDate[period][d.zone] = [];
+                    groupedByDate[period][d.zone].push(d);
                 });
                 
                 const datesList = document.getElementById('dates-list');
                 datesList.innerHTML = "";
-                Object.keys(groupedByDate).sort().forEach(date => {
-                    let dHtml = `<div style="background:#D32F2F; color:white; padding:10px; font-weight:900; border-radius:10px; margin-top:20px; text-align:center; font-size:1.1rem; letter-spacing:2px;">ARRIVÉE : ${formatDate(date)}</div>`;
-                    const zones = groupedByDate[date];
+                Object.keys(groupedByDate).sort().forEach(period => {
+                    const [arr, dep] = period.split('_');
+                    let dHtml = `<div style="background:#D32F2F; color:white; padding:10px; font-weight:900; border-radius:10px; margin-top:20px; text-align:center; font-size:1rem; letter-spacing:1px;">DU ${formatDate(arr)} AU ${formatDate(dep)}</div>`;
+                    const zones = groupedByDate[period];
                     Object.keys(zones).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(z => {
                         dHtml += `<div style="margin:10px 0 5px 10px; color:#D32F2F; font-weight:900; font-size:0.9rem;">${z} (${zones[z].length})</div>`;
                         zones[z].forEach(item => {
