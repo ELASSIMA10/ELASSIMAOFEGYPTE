@@ -101,7 +101,7 @@
             <div class="nav">
                 <button id="nav-form" class="active" onclick="showPage('form')">SAISIE</button>
                 <button id="nav-list" onclick="showPage('list')" style="display:none;">PLANNING</button>
-                <button id="nav-dates" onclick="showPage('dates')" style="display:none;">DATES</button>
+                <button id="nav-dates" onclick="showPage('dates')" style="display:none;">HÔTEL</button>
                 <button id="nav-nohotel" onclick="showPage('nohotel')" style="display:none;">SANS HÔTEL</button>
             </div>
 
@@ -135,7 +135,7 @@
             </div>
 
             <div id="dates" class="page">
-                <h3 style="color:#FFF; text-align:center; padding:10px 0; margin-bottom: 10px;">RÉSERVATIONS PAR DATE</h3>
+                <h3 style="color:#FFF; text-align:center; padding:10px 0; margin-bottom: 10px;">HÔTEL (PAR DATE)</h3>
                 <div id="dates-list"></div>
             </div>
 
@@ -275,61 +275,52 @@
                     html += `</div>`;
                     list.innerHTML += html;
                 });
-                
-                // Render No Hotel
-                const noHotelList = document.getElementById('nohotel-list');
-                noHotelList.innerHTML = "";
-                Object.keys(groupedNoHotel).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(zone => {
-                    let html = `<div class="zone-group"><div class="zone-header">${zone} (${groupedNoHotel[zone].length})</div>`;
-                    groupedNoHotel[zone].forEach(item => {
-                        html += `
-                        <div class="entry-card">
-                            <div class="entry-info">
-                                <b>${item.fullname}</b>
-                                <small>Séjour: ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
-                            </div>
-                            <div style="display:flex; align-items:center; gap: 10px;">
-                                <div class="dates-pill">${formatDate(item.arrival)}</div>
-                                <button onclick="deleteEntry('${item.id}')" style="background:none; border:none; cursor:pointer; font-size:1.5rem;" title="Supprimer">❌</button>
-                            </div>
-                        </div>`;
-                    });
-                    html += `</div>`;
-                    noHotelList.innerHTML += html;
-                });
+                // Render No Hotel (Old behavior is replaced)
+                // The groupedNoHotel loop is removed to be replaced by the groupedByDate structure below.
 
                 // Groupement par Période (Arrivée -> Départ) puis par Zone
                 const groupedByDate = {};
+                const noHotelGroupedByDate = {};
+                
                 snap.forEach(doc => {
                     const d = doc.data();
-                    if(d.hotel === "Non") return; // On ignore les SANS HOTEL dans le panneau DATES
-                    
                     const period = `${d.arrival}_${d.departure}`;
-                    if(!groupedByDate[period]) groupedByDate[period] = {};
-                    if(!groupedByDate[period][d.zone]) groupedByDate[period][d.zone] = [];
-                    groupedByDate[period][d.zone].push(d);
+                    if(d.hotel === "Non") {
+                        if(!noHotelGroupedByDate[period]) noHotelGroupedByDate[period] = {};
+                        if(!noHotelGroupedByDate[period][d.zone]) noHotelGroupedByDate[period][d.zone] = [];
+                        noHotelGroupedByDate[period][d.zone].push(d);
+                    } else {
+                        if(!groupedByDate[period]) groupedByDate[period] = {};
+                        if(!groupedByDate[period][d.zone]) groupedByDate[period][d.zone] = [];
+                        groupedByDate[period][d.zone].push(d);
+                    }
                 });
                 
-                const datesList = document.getElementById('dates-list');
-                datesList.innerHTML = "";
-                Object.keys(groupedByDate).sort().forEach(period => {
-                    const [arr, dep] = period.split('_');
-                    let dHtml = `<div style="background:#D32F2F; color:white; padding:10px; font-weight:900; border-radius:10px; margin-top:20px; text-align:center; font-size:1rem; letter-spacing:1px;">DU ${formatDate(arr)} AU ${formatDate(dep)}</div>`;
-                    const zones = groupedByDate[period];
-                    Object.keys(zones).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(z => {
-                        dHtml += `<div style="background:#D32F2F; color:#FFF; padding:8px 15px; border-radius:8px; margin:10px 0 5px 0; font-weight:900; font-size:1rem; display:inline-block;">${z} (${zones[z].length})</div>`;
-                        zones[z].forEach(item => {
-                            dHtml += `
-                            <div class="entry-card" style="margin-left:10px; padding:10px;">
-                                <div class="entry-info">
-                                    <b style="color:#fff;">${item.fullname}</b>
-                                </div>
-                                <button onclick="deleteEntry('${item.id}')" style="background:none; border:none; cursor:pointer; font-size:1.5rem;" title="Supprimer / Réinitialiser">❌</button>
-                            </div>`;
+                function renderListByDate(groupedObj, targetId) {
+                    const tList = document.getElementById(targetId);
+                    tList.innerHTML = "";
+                    Object.keys(groupedObj).sort().forEach(period => {
+                        const [arr, dep] = period.split('_');
+                        let dHtml = `<div style="background:#D32F2F; color:white; padding:10px; font-weight:900; border-radius:10px; margin-top:20px; text-align:center; font-size:1rem; letter-spacing:1px;">DU ${formatDate(arr)} AU ${formatDate(dep)}</div>`;
+                        const zones = groupedObj[period];
+                        Object.keys(zones).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(z => {
+                            dHtml += `<div style="background:#D32F2F; color:#FFF; padding:8px 15px; border-radius:8px; margin:10px 0 5px 0; font-weight:900; font-size:1rem; display:inline-block;">${z} (${zones[z].length})</div>`;
+                            zones[z].forEach(item => {
+                                dHtml += `
+                                <div class="entry-card" style="margin-left:10px; padding:10px;">
+                                    <div class="entry-info">
+                                        <b style="color:#fff;">${item.fullname}</b>
+                                    </div>
+                                    <button onclick="deleteEntry('${item.id}')" style="background:none; border:none; cursor:pointer; font-size:1.5rem;" title="Supprimer">❌</button>
+                                </div>`;
+                            });
                         });
+                        tList.innerHTML += dHtml;
                     });
-                    datesList.innerHTML += dHtml;
-                });
+                }
+
+                renderListByDate(groupedByDate, 'dates-list');
+                renderListByDate(noHotelGroupedByDate, 'nohotel-list');
             });
         }
 
