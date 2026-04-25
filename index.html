@@ -67,6 +67,8 @@
 </head>
 <body>
 
+    <audio id="bg-music" src="assets/music.mp3" loop preload="auto"></audio>
+
     <div id="login-screen">
         <div class="login-box">
             <img src="assets/images/logo_2.jpg?v=2" alt="Logo" class="logo-login">
@@ -86,7 +88,8 @@
             <img src="assets/images/IMG2.jpg?v=2" alt="P2">
             <img src="assets/images/IMG3.jpg?v=2" alt="P3">
             <div style="flex:1;"></div>
-            <button onclick="location.reload()" style="background:none; color:#fff; font-size:1.5rem; border:none; cursor:pointer;">🚪</button>
+            <button id="music-btn" onclick="toggleMusic()" style="background:none; border:none; cursor:pointer; font-size:1.5rem;" title="Musique">🔇</button>
+            <button onclick="location.reload()" style="background:none; color:#D32F2F; font-size:1.5rem; border:none; cursor:pointer;">🚪</button>
         </div>
 
         <div class="main-container">
@@ -141,6 +144,20 @@
         firebase.initializeApp(config);
         const db = firebase.firestore();
         let appMode = "";
+        
+        const bgMusic = document.getElementById('bg-music');
+        let musicPlaying = false;
+
+        function toggleMusic() {
+            if(musicPlaying) {
+                bgMusic.pause();
+                document.getElementById('music-btn').innerText = "🔇";
+            } else {
+                bgMusic.play().catch(e => console.log(e));
+                document.getElementById('music-btn').innerText = "🎵";
+            }
+            musicPlaying = !musicPlaying;
+        }
 
         function checkPin() {
             const val = document.getElementById('pin-input').value.trim();
@@ -155,6 +172,13 @@
                 }
                 loadData();
                 setCurrentTime();
+                
+                // Lancer la musique après interaction (clic de validation)
+                bgMusic.play().then(() => {
+                    musicPlaying = true;
+                    document.getElementById('music-btn').innerText = "🎵";
+                }).catch(e => console.log("La musique n'a pas pu démarrer", e));
+                
             } else {
                 document.getElementById('err').innerText = "CODE FAUX";
                 document.getElementById('pin-input').value = "";
