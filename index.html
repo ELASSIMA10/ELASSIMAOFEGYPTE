@@ -102,6 +102,7 @@
                 <button id="nav-form" class="active" onclick="showPage('form')">SAISIE</button>
                 <button id="nav-list" onclick="showPage('list')" style="display:none;">PLANNING</button>
                 <button id="nav-dates" onclick="showPage('dates')" style="display:none;">DATES</button>
+                <button id="nav-nohotel" onclick="showPage('nohotel')" style="display:none;">SANS HÔTEL</button>
             </div>
 
             <div id="form" class="page active">
@@ -113,8 +114,13 @@
                         <div style="flex:1;"><label>SORTIE</label><input type="date" id="departure"></div>
                     </div>
                     <label>ZONE</label>
-                    <select id="zone" style="text-align:left;">
+                    <select id="zone" style="text-align:left; margin-bottom:10px;">
                         <script>for(let i=1; i<=14; i++) document.write(`<option value="Zone ${i}">Zone ${i}</option>`);</script>
+                    </select>
+                    <label>HÔTEL AVEC GROUPE</label>
+                    <select id="hotel" style="text-align:left;">
+                        <option value="Oui">Oui</option>
+                        <option value="Non">Non</option>
                     </select>
                     <button onclick="saveData()" style="width:100%; padding:15px; background:#D32F2F; color:#fff; border:none; border-radius:15px; font-weight:900;">ENREGISTRER</button>
                 </div>
@@ -131,6 +137,11 @@
             <div id="dates" class="page">
                 <h3 style="color:#FFF; text-align:center; padding:10px 0; margin-bottom: 10px;">RÉSERVATIONS PAR DATE</h3>
                 <div id="dates-list"></div>
+            </div>
+
+            <div id="nohotel" class="page">
+                <h3 style="color:#FFF; text-align:center; padding:10px 0; margin-bottom: 10px;">SANS HÔTEL</h3>
+                <div id="nohotel-list"></div>
             </div>
         </div>
     </div>
@@ -173,6 +184,7 @@
                 if (val === "2020") {
                     document.getElementById('nav-list').style.display = 'block';
                     document.getElementById('nav-dates').style.display = 'block';
+                    document.getElementById('nav-nohotel').style.display = 'block';
                     document.getElementById('stats-area').style.display = 'flex';
                 }
                 loadData();
@@ -206,12 +218,13 @@
             const arr = document.getElementById('arrival').value;
             const dep = document.getElementById('departure').value;
             const z = document.getElementById('zone').value;
+            const hotelVal = document.getElementById('hotel').value;
             if (!name || !arr || !dep) return toast("CHAMPS VIDES");
             btn.disabled = true;
             try {
                 await db.collection("registrations").add({
                     fullname: name, arrival: arr, departure: dep, 
-                    zone: z,
+                    zone: z, hotel: hotelVal,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 toast("ENREGISTRÉ !");
@@ -229,11 +242,19 @@
 
                 list.innerHTML = "";
                 const grouped = {};
+                const groupedNoHotel = {};
+                
                 snap.forEach(doc => {
                     const d = doc.data();
                     d.id = doc.id; // Store ID for deletion
-                    if (!grouped[d.zone]) grouped[d.zone] = [];
-                    grouped[d.zone].push(d);
+                    
+                    if(d.hotel === "Non") {
+                        if (!groupedNoHotel[d.zone]) groupedNoHotel[d.zone] = [];
+                        groupedNoHotel[d.zone].push(d);
+                    } else {
+                        if (!grouped[d.zone]) grouped[d.zone] = [];
+                        grouped[d.zone].push(d);
+                    }
                 });
 
                 Object.keys(grouped).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(zone => {
@@ -254,11 +275,35 @@
                     html += `</div>`;
                     list.innerHTML += html;
                 });
+                
+                // Render No Hotel
+                const noHotelList = document.getElementById('nohotel-list');
+                noHotelList.innerHTML = "";
+                Object.keys(groupedNoHotel).sort((a,b) => a.localeCompare(b, undefined, {numeric: true})).forEach(zone => {
+                    let html = `<div class="zone-group"><div class="zone-header">${zone} (${groupedNoHotel[zone].length})</div>`;
+                    groupedNoHotel[zone].forEach(item => {
+                        html += `
+                        <div class="entry-card">
+                            <div class="entry-info">
+                                <b>${item.fullname}</b>
+                                <small>Séjour: ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
+                            </div>
+                            <div style="display:flex; align-items:center; gap: 10px;">
+                                <div class="dates-pill">${formatDate(item.arrival)}</div>
+                                <button onclick="deleteEntry('${item.id}')" style="background:none; border:none; cursor:pointer; font-size:1.5rem;" title="Supprimer">❌</button>
+                            </div>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                    noHotelList.innerHTML += html;
+                });
 
                 // Groupement par Période (Arrivée -> Départ) puis par Zone
                 const groupedByDate = {};
                 snap.forEach(doc => {
                     const d = doc.data();
+                    if(d.hotel === "Non") return; // On ignore les SANS HOTEL dans le panneau DATES
+                    
                     const period = `${d.arrival}_${d.departure}`;
                     if(!groupedByDate[period]) groupedByDate[period] = {};
                     if(!groupedByDate[period][d.zone]) groupedByDate[period][d.zone] = [];
