@@ -232,12 +232,13 @@
                     const d = doc.data();
                     d.id = doc.id; // Store ID for deletion
                     
+                    // Add to grouped (Planning) regardless of hotel status
+                    if (!grouped[d.zone]) grouped[d.zone] = [];
+                    grouped[d.zone].push(d);
+
                     if(d.hotel === "Non") {
                         if (!groupedNoHotel[d.zone]) groupedNoHotel[d.zone] = [];
                         groupedNoHotel[d.zone].push(d);
-                    } else {
-                        if (!grouped[d.zone]) grouped[d.zone] = [];
-                        grouped[d.zone].push(d);
                     }
                 });
 
@@ -247,7 +248,7 @@
                         html += `
                         <div class="entry-card">
                             <div class="entry-info">
-                                <b>${item.fullname}</b>
+                                <b>${item.fullname} ${item.hotel === "Non" ? '<span style="color:#D32F2F; font-size:0.7rem; margin-left:10px; border:1px solid #D32F2F; padding:1px 5px; border-radius:5px; vertical-align:middle;">SANS HÔTEL</span>' : ''}</b>
                                 <small>Séjour: ${formatDate(item.arrival)} au ${formatDate(item.departure)}</small>
                             </div>
                             <div style="display:flex; align-items:center; gap: 10px;">
