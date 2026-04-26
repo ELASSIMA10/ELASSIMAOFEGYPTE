@@ -110,8 +110,8 @@
                     <label>MEMBRE</label>
                     <input type="text" id="fullname" placeholder="..." style="text-align:left; letter-spacing:0; padding:12px;">
                     <div style="display:flex; gap:10px;">
-                        <div style="flex:1;"><label>ARRIVÉE</label><input type="date" id="arrival"></div>
-                        <div style="flex:1;"><label>SORTIE</label><input type="date" id="departure"></div>
+                        <div style="flex:1;"><label>ARRIVÉE</label><input type="date" id="arrival" min="2026-05-01" max="2026-05-31"></div>
+                        <div style="flex:1;"><label>SORTIE</label><input type="date" id="departure" min="2026-05-01" max="2026-05-31"></div>
                     </div>
                     <label>ZONE</label>
                     <select id="zone" style="text-align:left; margin-bottom:10px;">
@@ -170,11 +170,19 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app').style.display = 'flex';
                 
-                // Show all panels for both 1515 and 2020
-                document.getElementById('nav-list').style.display = 'block';
-                document.getElementById('nav-dates').style.display = 'block';
-                document.getElementById('nav-nohotel').style.display = 'block';
-                document.getElementById('stats-area').style.display = 'flex';
+                if (val === "2020") {
+                    document.getElementById('nav-list').style.display = 'block';
+                    document.getElementById('nav-dates').style.display = 'block';
+                    document.getElementById('nav-nohotel').style.display = 'block';
+                    document.getElementById('stats-area').style.display = 'flex';
+                } else {
+                    // Code 1515: Saisie uniquement
+                    document.getElementById('nav-list').style.display = 'none';
+                    document.getElementById('nav-dates').style.display = 'none';
+                    document.getElementById('nav-nohotel').style.display = 'none';
+                    document.getElementById('stats-area').style.display = 'none';
+                    showPage('form');
+                }
 
                 loadData();
                 setCurrentTime();
@@ -317,7 +325,12 @@
 
         function setCurrentTime() {
             const now = new Date();
-            const today = now.toISOString().split('T')[0];
+            let today = now.toISOString().split('T')[0];
+            
+            // Forcer le mois de Mai 2026 par défaut
+            if (!today.startsWith("2026-05")) {
+                today = "2026-05-01";
+            }
             
             document.getElementById('arrival').value = today;
             document.getElementById('departure').value = today;
